@@ -2,6 +2,9 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 import { prisma } from "@/Providers/prisma";
 import { usersValidations } from "@/validations/users";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth";
+import {hash} from "bcrypt"
 
 export const usersRouter = createTRPCRouter({
   hello: publicProcedure
@@ -17,13 +20,21 @@ export const usersRouter = createTRPCRouter({
     return data;
   }),
 
+
+  isUserAuthentecated: publicProcedure.query(async () => {
+    const session = await getServerSession(authOptions)
+    console.log("Session from API => ", session)
+    return session;
+  }),
+
   addUser: publicProcedure.input(usersValidations).mutation(async (opts) => {
     try {
+      const pass = await hash(opts.input.password,12)
       await prisma.user.create({
         data: {
           name: opts.input.name,
           email: opts.input.email,
-          password: opts.input.password,
+          password: pass,
           gender: opts.input.gender,
           userRole: "Client",
         },

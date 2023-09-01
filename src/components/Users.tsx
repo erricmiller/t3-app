@@ -4,13 +4,12 @@ import { trpcServer } from "@/app/_trpc/trpcServerClient";
 import React, { useState } from "react";
 
 
-const Users = ({initialUsers}:{initialUsers: Awaited<ReturnType<(typeof trpcServer.users)["getUsers"]>>}) => {
-  const getUsers = trpc.users.getUsers.useQuery(undefined,{
-    initialData:initialUsers,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-  });
-//   const getUsers = trpc.users.getUsers.useQuery();
+const Users = () => {
+
+
+  // for client sdie fetching
+  const clientUsers = trpc.users.getUsers.useQuery();
+  const isUserAuthentecated = trpc.users.isUserAuthentecated.useQuery();
 
   const [content, setContent] = useState({
     name: "Asad",
@@ -20,13 +19,13 @@ const Users = ({initialUsers}:{initialUsers: Awaited<ReturnType<(typeof trpcServ
   });
   const addUser = trpc.users.addUser.useMutation({
     onSettled: () => {
-        getUsers.refetch();
+      clientUsers.refetch();
     },
   });
   return (
     <div>
       <h2>Data Fetching using TRPC & Prisma (client only)</h2>
-      <div>{JSON.stringify(getUsers.data)}</div>
+      <div>{JSON.stringify(clientUsers.data)}</div>
       <h2>Add Data using TRPC & Prisma (client only)</h2>
       <button
         onClick={async () => {
@@ -41,6 +40,10 @@ const Users = ({initialUsers}:{initialUsers: Awaited<ReturnType<(typeof trpcServ
       >
         Add User
       </button>
+      <h2>Data Fetching using API (client only)</h2>
+      <div>Server Session : {
+            isUserAuthentecated ? (<p>{JSON.stringify(isUserAuthentecated.data)}</p>) : (<p>Not Found</p>)
+}</div>
     </div>
   );
 };

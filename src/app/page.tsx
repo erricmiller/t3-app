@@ -1,17 +1,31 @@
+import React from 'react'
 import PrismaComp from "@/components/PrismaComp";
-import Users from "@/components/Users";
-import { trpcServer } from "./_trpc/trpcServerClient";
+import UsersData from "@/components/UsersData";
+import { authOptions } from '@/server/auth'
+import getServerSession from "next-auth"
 
+const Home = async() =>  {
 
-export default async function Home() {
-  const users = await trpcServer.users.getUsers();
+  const session = await getServerSession(authOptions)
+
+  console.log("session:-------------------------" ,session)
+
   return (
     <main>
       T3 APP
+      
+      <div>
+        {session? (
+          <h2>Hello, {JSON.stringify(session)}</h2>
+          //  <UsersData/>
+        ) : (
+          <h2>Please login to view Users data</h2>
+        ) }
+      </div>
       {/* <PrismaComp/> */}
-      <h2>Data Fetching using TRPC & Prisma (Server only)</h2>
-      <div>Data fetching will be passed to client components to display and will not be printed in server components.</div>
-      <Users initialUsers={users}/>
     </main>
   );
 }
+
+
+export default Home
