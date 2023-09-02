@@ -13,6 +13,7 @@ const UsersData = async () => {
       <br />
       <div>{JSON.stringify(users)}</div>
       <Users/>
+
     </div>
   );
 };

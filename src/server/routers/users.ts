@@ -4,7 +4,7 @@ import { prisma } from "@/Providers/prisma";
 import { usersValidations } from "@/validations/users";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth";
-import {hash} from "bcrypt"
+import {compare, hash} from "bcrypt"
 
 export const usersRouter = createTRPCRouter({
   hello: publicProcedure
@@ -23,7 +23,6 @@ export const usersRouter = createTRPCRouter({
 
   isUserAuthentecated: publicProcedure.query(async () => {
     const session = await getServerSession(authOptions)
-    console.log("Session from API => ", session)
     return session;
   }),
 
@@ -49,7 +48,7 @@ export const usersRouter = createTRPCRouter({
   //     return ctx.prisma.example.findMany();
   //   }),
 
-  //   getSecretMessage: protectedProcedure.query(() => {
-  //     return "you can now see this secret message!";
-  //   }),
+    // getSecretMessage: protectedProcedure.query(() => {
+    //   return "you can now see this secret message!";
+    // }),
 });

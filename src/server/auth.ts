@@ -1,13 +1,16 @@
+import { prisma } from "@/Providers/prisma";
+import { User } from "@prisma/client";
+import { compare } from "bcrypt";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials"
 import GitHubProvider from "next-auth/providers/github"
 
 export const authOptions: NextAuthOptions = {
-//   session: {
-//     strategy: "jwt",
-//     // Seconds - How long until an idle session expires and is no longer valid.
-//     maxAge: 24 * 60 * 60, // 24 hours
-//   },
+  session: {
+    strategy: "jwt",
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 24 * 60 * 60, // 24 hours
+  },
   providers: [
     GitHubProvider({
         clientId:process.env.GITHUB_ID as string,
@@ -28,24 +31,65 @@ export const authOptions: NextAuthOptions = {
         //   })
         //   const user = await res.json()
 
-        const user = {id:"1",name:"Fahad",email:"fahad@test.com", password:"123456789"}
-        return user
+        // const user = {id:"1",name:"Fahad",email:"fahad@test.com", password:"123456789"}
+        const user =await prisma.user.findUnique({
+          where:{
+            email: credentials?.email
+          }
+        })
+        
+    
+        if(!user){
+          return null
+        }
+    
+        const isPasswordValid = await compare(credentials?.password as string,user.password )
+        if(!isPasswordValid){
+          return null
+        }
+        return {
+          id:user.id+"",
+          name:user.name+"",
+          email:user.email+"",
+          userRole:user.userRole+"",
+        }
 
-        // if(credentials?.email === user.email && credentials?.password === user.password){
-        //     return user
-        // }else {
-        //     return null
-        // }
+         
     
           // If no error and we have user data, return it
         //   if (res.ok && user) {
         //     return user
         //   }
           // Return null if user data could not be retrieved
-          return null
+          // return null
         }
       })
   ],
+  callbacks:{
+    session: ({session,token})=>{
+      // console.log("Session Callback",{session,token})
+      return {
+        ...session,
+        user:{
+          ...session.user,
+          id: token.id,
+          userRole: token.userRole,
+        }
+      }
+    },
+    jwt:({token,user}) =>{
+      // console.log("JWT Callback", {token,user})
+      if(user){
+        const u = user as unknown as User
+        return {
+          ...token,
+          id:u.id,
+          userRole:u.userRole
+        }
+      }
+      return token
+    },
+  },
 //   pages: {
 //     signIn: "/auth/signin",
 //     signOut: "/auth/signout",

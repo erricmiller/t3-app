@@ -1,6 +1,7 @@
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
 
 const t = initTRPC.create();
+
 
 
 /**
@@ -25,3 +26,4 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
+
