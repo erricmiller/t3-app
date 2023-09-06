@@ -44,6 +44,26 @@ export const usersRouter = createTRPCRouter({
     }
   }),
 
+
+  updateUser: publicProcedure.input(usersValidations).mutation(async (opts) => {
+    try {
+      console.log(opts.input)
+      // const pass = await hash(opts.input.password,12)
+      // await prisma.user.create({
+      //   data: {
+      //     name: opts.input.name,
+      //     email: opts.input.email,
+      //     password: pass,
+      //     gender: opts.input.gender,
+      //     userRole: "Client",
+      //   },
+      // });
+      return true;
+    } catch (error) {
+      return error;
+    }
+  }),
+
   //   getAll: publicProcedure.query(({ ctx }) => {
   //     return ctx.prisma.example.findMany();
   //   }),

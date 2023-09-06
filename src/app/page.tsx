@@ -1,3 +1,6 @@
+import AddModal from "@/components/AddModal";
+import EditModal from "@/components/EditModal";
+import MultiDeleteModal from "@/components/MultiDeleteModal";
 import UsersData from "@/components/UsersData";
 import { authOptions } from "@/server/auth";
 import { getServerSession } from "next-auth";
@@ -9,7 +12,7 @@ const Home = async () => {
   return (
     <main>
       T3 APP
-      <div>
+      {/* <div>
         {session ? (
           <div>
             <p>Hello, {JSON.stringify(session)}</p>
@@ -18,8 +21,11 @@ const Home = async () => {
         ) : (
           <h2>Please login to view Users data</h2>
         )}
-      </div>
+      </div> */}
       {/* <PrismaComp/> */}
+      <AddModal />
+      <EditModal />
+      <MultiDeleteModal />
     </main>
   );
 };

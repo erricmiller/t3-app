@@ -1,3 +1,4 @@
+import "@/styles/globals.css";
 import AuthProvider from "@/Providers/AuthProvider";
 import TRPCProvider from "@/Providers/TRPCProvider";
 import type { Metadata } from "next";
@@ -9,6 +10,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "T3 APP",
   description: "Created by Fahad",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
 };
 
 export default function RootLayout({
